@@ -1,0 +1,21 @@
+name: Post newly cases to Slack
+on:
+  push:
+  schedule:
+    - cron: "0 1 * * *"
+jobs:
+  post-cases-to-slack:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start
+        env:
+          TZ: "Asia/Tokyo"
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
